@@ -3,7 +3,7 @@
   "name": "Screenshot Taker",
   "version": "1.0",
   "description": "An extension to take screenshots of the current tab.",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "tabs"],
   "icons": {
     "16": "icon16.png"
   },
