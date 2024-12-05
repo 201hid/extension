@@ -2,6 +2,8 @@ document.getElementById("capture").addEventListener("click", captureFirstScreens
 document.getElementById("captureSecond").addEventListener("click", captureSecondScreenshot);
 document.getElementById("restart").addEventListener("click", restartSession);
 
+let countdownInterval;
+
 function captureFirstScreenshot() {
     const messageDiv = document.getElementById("message");
     const captureButton = document.getElementById("capture");
@@ -34,6 +36,7 @@ function captureFirstScreenshot() {
                         firstScreenshot: response.screenshotUrl,
                         firstFilename: filename,
                         tabUrl: tab.url,
+                        countdown: 5, // Start the 10-second countdown
                     },
                     (sessionResponse) => {
                         if (sessionResponse && sessionResponse.success) {
@@ -67,10 +70,10 @@ function hardRefreshTab() {
         messageDiv.textContent = "Refreshing page...";
 
         chrome.tabs.reload(tab.id, { bypassCache: true }, () => {
-            console.log("Page refreshed. Waiting for second screenshot.");
-            messageDiv.textContent = "Please capture the second screenshot or restart.";
-            document.getElementById("captureSecond").style.display = "inline-block";
-            document.getElementById("restart").style.display = "inline-block";
+            console.log("Page refreshed. Starting countdown for second screenshot.");
+            // The background script is handling the countdown.
+            // Update the popup UI accordingly.
+            updateUI();
         });
     });
 }
@@ -111,6 +114,7 @@ function captureSecondScreenshot() {
                         messageDiv.textContent = "Both screenshots downloaded.";
                         document.getElementById("captureSecond").style.display = "none";
                         document.getElementById("restart").style.display = "none";
+                        clearInterval(countdownInterval);
                     });
                 } else {
                     console.error("Session state not valid for second screenshot.");
@@ -142,6 +146,7 @@ function resetUI() {
     document.getElementById("captureSecond").style.display = "none";
     document.getElementById("restart").style.display = "none";
     messageDiv.textContent = "";
+    clearInterval(countdownInterval);
 }
 
 // Sanitize filename
@@ -153,13 +158,37 @@ function sanitizeFilename(url) {
         .replace(/_$/g, ''); // Remove trailing underscores
 }
 
-// On popup load, check session state
-chrome.runtime.sendMessage({ action: "get_session_state" }, (sessionState) => {
-    if (sessionState.step === 1) {
-        console.log("Resuming session. Waiting for second screenshot...");
-        document.getElementById("capture").style.display = "none";
-        document.getElementById("captureSecond").style.display = "inline-block";
-        document.getElementById("restart").style.display = "inline-block";
-        document.getElementById("message").textContent = "Please capture the second screenshot or restart.";
-    }
-});
+// Update UI based on session state
+function updateUI() {
+    chrome.runtime.sendMessage({ action: "get_session_state" }, (sessionState) => {
+        const messageDiv = document.getElementById("message");
+        if (sessionState.step === 1 && sessionState.countdown > 0) {
+            console.log("Resuming session. Countdown for second screenshot is active.");
+            document.getElementById("capture").style.display = "none";
+            document.getElementById("captureSecond").style.display = "inline-block";
+            document.getElementById("restart").style.display = "inline-block";
+
+            // Start the countdown display
+            messageDiv.textContent = `Please capture the second screenshot within ${sessionState.countdown} seconds.`;
+            clearInterval(countdownInterval);
+            countdownInterval = setInterval(() => {
+                chrome.runtime.sendMessage({ action: "get_session_state" }, (updatedSession) => {
+                    if (updatedSession.countdown > 0) {
+                        messageDiv.textContent = `Please capture the second screenshot within ${updatedSession.countdown} seconds.`;
+                    } else {
+                        clearInterval(countdownInterval);
+                        messageDiv.textContent = "Time's up! Session reset.";
+                        document.getElementById("captureSecond").style.display = "none";
+                        document.getElementById("restart").style.display = "none";
+                        document.getElementById("capture").style.display = "inline-block";
+                    }
+                });
+            }, 1000);
+        } else {
+            resetUI();
+        }
+    });
+}
+
+// On popup load, update the UI
+updateUI();
