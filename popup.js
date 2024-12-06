@@ -5,56 +5,58 @@ document.getElementById("restart").addEventListener("click", restartSession);
 let countdownInterval;
 
 function captureFirstScreenshot() {
-    const messageDiv = document.getElementById("message");
-    const captureButton = document.getElementById("capture");
+  const messageDiv = document.getElementById("message");
+  const captureButton = document.getElementById("capture");
 
-    console.log("Capturing first screenshot...");
+  console.log("Capturing first screenshot...");
 
-    // Hide capture button and show status message
-    captureButton.style.display = "none";
-    messageDiv.textContent = "Capturing first screenshot...";
+  // Hide capture button and show status message
+  captureButton.style.display = "none";
+  messageDiv.textContent = "Capturing first screenshot...";
 
-    // Capture the screenshot
-    chrome.runtime.sendMessage({ action: "capture_screenshot" }, (response) => {
-        if (response && response.screenshotUrl) {
-            console.log("First screenshot captured successfully:", response.screenshotUrl);
+  // Capture the screenshot
+  chrome.runtime.sendMessage({ action: "capture_screenshot" }, (response) => {
+      if (response && response.screenshotUrl) {
+          console.log("First screenshot captured successfully:", response.screenshotUrl);
 
-            // Fetch the current tab URL
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                if (tabs.length === 0) {
-                    console.error("No active tab found.");
-                    return;
-                }
+          // Fetch the current tab URL and tabId
+          chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+              if (tabs.length === 0) {
+                  console.error("No active tab found.");
+                  return;
+              }
 
-                const tab = tabs[0];
-                const filename = sanitizeFilename(tab.url) + "-before.png";
+              const tab = tabs[0];
+              const filename = sanitizeFilename(tab.url) + "-before.png";
 
-                // Start session with first screenshot
-                chrome.runtime.sendMessage(
-                    {
-                        action: "start_session",
-                        firstScreenshot: response.screenshotUrl,
-                        firstFilename: filename,
-                        tabUrl: tab.url,
-                        countdown: 5, // Start the 10-second countdown
-                    },
-                    (sessionResponse) => {
-                        if (sessionResponse && sessionResponse.success) {
-                            console.log("Session started with first screenshot.");
-                            hardRefreshTab();
-                        } else {
-                            console.error("Failed to start session:", sessionResponse);
-                            messageDiv.textContent = "Failed to start session.";
-                        }
-                    }
-                );
-            });
-        } else {
-            console.error("Error capturing first screenshot:", response ? response.error : "Unknown error");
-            messageDiv.textContent = "Failed to capture the first screenshot.";
-        }
-    });
+              // Start session with first screenshot and store tabId
+              chrome.runtime.sendMessage(
+                  {
+                      action: "start_session",
+                      firstScreenshot: response.screenshotUrl,
+                      firstFilename: filename,
+                      tabUrl: tab.url,
+                      tabId: tab.id, // include the tabId
+                      countdown: 100, // 10 seconds countdown
+                  },
+                  (sessionResponse) => {
+                      if (sessionResponse && sessionResponse.success) {
+                          console.log("Session started with first screenshot.");
+                          hardRefreshTab();
+                      } else {
+                          console.error("Failed to start session:", sessionResponse);
+                          messageDiv.textContent = "Failed to start session.";
+                      }
+                  }
+              );
+          });
+      } else {
+          console.error("Error capturing first screenshot:", response ? response.error : "Unknown error");
+          messageDiv.textContent = "Failed to capture the first screenshot.";
+      }
+  });
 }
+
 
 function hardRefreshTab() {
     const messageDiv = document.getElementById("message");
