@@ -1,0 +1,177 @@
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(120deg, #000000, #1a1a1a);
+    color: #e0e0e0;
+    text-align: center;
+}
+
+h1, h2, p {
+    margin: 0;
+    padding: 0;
+}
+
+/* Header */
+header {
+    padding: 50px 20px;
+    background: linear-gradient(120deg, #1a1a1a, #333333);
+    color: #ffffff;
+    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+header h1 {
+    font-size: 3em;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #00d1b2;
+    animation: fade-in 1.5s ease-in-out;
+}
+
+header p {
+    font-size: 1.2em;
+    margin-top: 10px;
+    color: #aaaaaa;
+    animation: slide-in 1.5s ease-in-out;
+}
+
+/* Sections */
+.section {
+    padding: 30px;
+    margin: 20px auto;
+    background: #1a1a1a;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
+    max-width: 800px;
+    animation: fade-up 1.5s ease-in-out;
+}
+
+h2 {
+    color: #00d1b2;
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #cccccc;
+    font-size: 1.1em;
+}
+
+/* File Input */
+input[type="file"] {
+    margin: 15px 0;
+    padding: 10px;
+    background: #222222;
+    color: #e0e0e0;
+    border: 1px solid #333;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+button {
+    background: #00d1b2;
+    color: #121212;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 25px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+button:hover {
+    background: #00b2a1;
+    transform: scale(1.05);
+}
+
+/* Screenshot Grid */
+.screenshots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.screenshots-grid img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.screenshots-grid img:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Footer */
+footer {
+    padding: 15px;
+    background: #111111;
+    color: #888888;
+    font-size: 0.9em;
+    box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Animations */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(120deg, #000000, #1a1a1a);
+    color: #e0e0e0;
+    text-align: center;
+    display: flex;
+    flex-direction: column; /* Allows footer to stay at the bottom */
+    min-height: 100vh; /* Ensures the body spans the full height */
+}
+
+main {
+    flex: 1; /* Pushes the footer down */
+}
+
+footer {
+    padding: 15px;
+    background: #111111;
+    color: #888888;
+    font-size: 0.9em;
+    box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.3);
+    margin-top: auto; /* Ensures the footer sticks to the bottom */
+}
