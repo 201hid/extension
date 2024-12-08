@@ -8,7 +8,7 @@ let sessionState = {
     countdownIntervalId: null, // Interval ID for the countdown
 };
 
-const AWS_BUCKET_URL = "https://varifyy-screenshots.s3.YOUR_REGION.amazonaws.com";
+const AWS_BUCKET_URL = "https://varifyy-screenshots.s3.YOUR_REGION.amazonaws.com";  // NEEDS TO BE REPLACED WHEN WE CREATE THE S3 BUCKET
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "capture_screenshot") {
