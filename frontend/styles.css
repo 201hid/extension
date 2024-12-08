@@ -175,3 +175,19 @@ footer {
     box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.3);
     margin-top: auto; /* Ensures the footer sticks to the bottom */
 }
+button#refreshButton {
+    background: #00b2a1;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+button#refreshButton:hover {
+    background: #008c9e;
+    transform: scale(1.05);
+}
