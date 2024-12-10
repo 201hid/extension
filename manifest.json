@@ -1,18 +1,22 @@
 {
   "manifest_version": 3,
-  "name": "Screenshot Taker",
-  "version": "1.1",
-  "description": "An extension to take and manage screenshots in two steps with a countdown.",
-  "permissions": ["activeTab", "scripting", "tabs"],
-  "icons": {
-    "16": "icon16.png"
-  },
+  "name": "Cognito Extension Demo",
+  "version": "1.0",
+  "description": "Check user login state from AWS Cognito using localhost and capture screenshots.",
+  "permissions": ["tabs", "scripting", "storage", "activeTab"],
   "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icon16.png"
-    }
+    "default_popup": "popup.html"
   },
+  "host_permissions": [
+    "http://localhost:3003/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://localhost:3003/*"],
+      "js": ["contentScript.js"],
+      "run_at": "document_idle"
+    }
+  ],
   "background": {
     "service_worker": "background.js"
   }
